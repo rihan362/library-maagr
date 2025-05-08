@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .user-dropdown a {
+            color: var(--dark-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .user-menu:hover .user-dropdown {
+            display: block;
+        }
+
+        /* Main Content Styles */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 0.8rem 1.8rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #27ae60;
+        }
+
+        /* Card Styles */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+
+        .card-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .card-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .radio-group {
+            margin-top: 1rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .radio-option input {
+            margin-right: 0.5rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .select-control {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-links {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navbar -->
+    <header>
+        <a href="index.html" class="logo">Library System</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="books.html">Books</a>
+            <a href="about.html">About</a>
+            
+            <div class="user-menu">
+                <button class="user-btn">
+                    <span id="username-display">Guest</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3.5 9.5a3.5 3.5 0 1 1 5.898 2.549 5.507 5.507 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4.001 4.001 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.5 9.5zM11 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                    </svg>
+                </button>
+                <div class="user-dropdown" id="user-dropdown">
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                    <a href="#" id="logout-btn" style="display: none;">Logout</a>
+                    <a href="profile.html" id="profile-link" style="display: none;">Profile</a>
+                    <a href="admin.html" id="admin-link" style="display: none;">Admin Panel</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content (changes based on page) -->
+    <div class="container" id="main-content">
+        <!-- Home Page Content (default) -->
+        <section id="home-page">
+            <div class="hero">
+                <h1>Welcome to Our Library</h1>
+                <p>Discover thousands of books, manage your account, and explore our digital resources all in one place.</p>
+                <div class="btn-group">
+                    <a href="login.html" class="btn btn-primary">Login</a>
+                    <a href="register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+
+            <h2>Featured Books</h2>
+            <div class="card-grid" id="featured-books">
+                <!-- Books will be loaded here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Login Page Content (hidden by default) -->
+        <section id="login-page" style="display: none;">
+            <div class="form-container">
+                <h2 class="form-title">Login</h2>
+                <div id="login-error" class="alert alert-danger" style="display: none;"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem;">Don't have an account? <a href="register.html">Register here</a></p>
+            </div>
+        </section>
+
+        <!-- Register Page Content (hidden by default) -->
+        <section id="register-page" style="display: none;">
+            <div class="form-container">
+                <h2 class="form-title">Create Account</h2>
+                <div id="register-error" class="alert alert-danger" style="display: none;"></div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Membership Type</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="6months" name="membership" value="6months" checked>
+                                <label for="6months">6 Months</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="1year" name="membership" value="1year">
+                                <label for="1year">1 Year</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="2years" name="membership" value="2years">
+                                <label for="2years">2 Years</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem;">Already have an account? <a href="login.html">Login here</a></p>
+            </div>
+        </section>
+
+        <!-- Books Page Content (hidden by default) -->
+        <section id="books-page" style="display: none;">
+            <h1>Our Book Collection</h1>
+            <div class="form-group">
+                <input type="text" id="book-search" class="form-control" placeholder="Search books...">
+            </div>
+            <div class="card-grid" id="all-books">
+                <!-- Books will be loaded here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Admin Page Content (hidden by default) -->
+        <section id="admin-page" style="display: none;">
+            <h1>Admin Dashboard</h1>
+            
+            <h2>User Management</h2>
+            <div class="table-container">
+                <table id="users-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Membership</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-list">
+                        <!-- Users will be loaded here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Profile Page Content (hidden by default) -->
+        <section id="profile-page" style="display: none;">
+            <div class="form-container">
+                <h2 class="form-title">My Profile</h2>
+                <div id="profile-info">
+                    <p><strong>Username:</strong> <span id="profile-username"></span></p>
+                    <p><strong>Email:</strong> <span id="profile-email"></span></p>
+                    <p><strong>Membership:</strong> <span id="profile-membership"></span></p>
+                </div>
+                
+                <h3 style="margin-top: 2rem;">Update Membership</h3>
+                <form id="membership-form">
+                    <div class="form-group">
+                        <label>New Membership</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="update-6months" name="update-membership" value="6months">
+                                <label for="update-6months">6 Months</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="update-1year" name="update-membership" value="1year">
+                                <label for="update-1year">1 Year</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="update-2years" name="update-membership" value="2years">
+                                <label for="update-2years">2 Years</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Membership</button>
+                </form>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Current user data
+        let currentUser = null;
+
+        // Sample book data
+        const books = [
+            {
+                id: 1,
+                title: "The Great Gatsby",
+                author: "F. Scott Fitzgerald",
+                description: "A story of wealth, love, and the American Dream in the 1920s.",
+                image: "https://via.placeholder.com/300x200?text=The+Great+Gatsby",
+                price: 12.99,
+                status: "available"
+            },
+            {
+                id: 2,
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                description: "A powerful story of racial injustice and moral growth in the American South.",
+                image: "https://via.placeholder.com/300x200?text=To+Kill+a+Mockingbird",
+                price: 10.99,
+                status: "available"
+            },
+            {
+                id: 3,
+                title: "1984",
+                author: "George Orwell",
+                description: "A dystopian novel about totalitarianism and surveillance.",
+                image: "https://via.placeholder.com/300x200?text=1984",
+                price: 9.99,
+                status: "out-of-stock"
+            },
+            {
+                id: 4,
+                title: "Pride and Prejudice",
+                author: "Jane Austen",
+                description: "A romantic novel about the Bennett family and their quest for suitable marriages.",
+                image: "https://via.placeholder.com/300x200?text=Pride+and+Prejudice",
+                price: 8.99,
+                status: "available"
+            }
+        ];
+
+        // Sample user data
+        const users = [
+            {
+                id: 1,
+                username: "admin",
+                email: "admin@library.com",
+                role: "admin",
+                membership: "1year"
+            },
+            {
+                id: 2,
+                username: "john_doe",
+                email: "john@example.com",
+                role: "user",
+                membership: "6months"
+            }
+        ];
+
+        // DOM Elements
+        const mainContent = document.getElementById('main-content');
+        const usernameDisplay = document.getElementById('username-display');
+        const userDropdown = document.getElementById('user-dropdown');
+        const logoutBtn = document.getElementById('logout-btn');
+        const profileLink = document.getElementById('profile-link');
+        const adminLink = document.getElementById('admin-link');
+
+        // Page sections
+        const pages = {
+            home: document.getElementById('home-page'),
+            login: document.getElementById('login-page'),
+            register: document.getElementById('register-page'),
+            books: document.getElementById('books-page'),
+            admin: document.getElementById('admin-page'),
+            profile: document.getElementById('profile-page')
+        };
+
+        // Form elements
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const membershipForm = document.getElementById('membership-form');
+
+        // Initialize the app
+        function init() {
+            // Check if user is logged in (in a real app, this would check cookies/session)
+            const savedUser = localStorage.getItem('libraryUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUI();
+            }
+
+            // Load the appropriate page based on URL
+            loadPage();
+
+            // Render featured books
+            renderFeaturedBooks();
+
+            // Set up event listeners
+            setupEventListeners();
+        }
+
+        // Load the appropriate page based on URL hash
+        function loadPage() {
+            const hash = window.location.hash.substr(1) || 'home';
+            
+            // Hide all pages
+            Object.values(pages).forEach(page => {
+                page.style.display = 'none';
+            });
+
+            // Show the requested page
+            if (pages[hash]) {
+                pages[hash].style.display = 'block';
+                
+                // Load specific content for certain pages
+                if (hash === 'books') {
+                    renderAllBooks();
+                } else if (hash === 'admin') {
+                    renderUsersTable();
+                } else if (hash === 'profile') {
+                    renderProfile();
+                }
+            } else {
+                pages.home.style.display = 'block';
+            }
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation
+            window.addEventListener('hashchange', loadPage);
+
+            // Forms
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+            
+            if (registerForm) {
+                registerForm.addEventListener('submit', handleRegister);
+            }
+            
+            if (membershipForm) {
+                membershipForm.addEventListener('submit', handleMembershipUpdate);
+            }
+            
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', handleLogout);
+            }
+
+            // Book search
+            const bookSearch = document.getElementById('book-search');
+            if (bookSearch) {
+                bookSearch.addEventListener('input', filterBooks);
+            }
+        }
+
+        // Update UI based on user state
+        function updateUI() {
+            if (currentUser) {
+                usernameDisplay.textContent = currentUser.username;
+                logoutBtn.style.display = 'block';
+                profileLink.style.display = 'block';
+                
+                if (currentUser.role === 'admin') {
+                    adminLink.style.display = 'block';
+                } else {
+                    adminLink.style.display = 'none';
+                }
+            } else {
+                usernameDisplay.textContent = 'Guest';
+                logoutBtn.style.display = 'none';
+                profileLink.style.display = 'none';
+                adminLink.style.display = 'none';
+            }
+        }
+
+        // Render featured books on home page
+        function renderFeaturedBooks() {
+            const featuredBooksContainer = document.getElementById('featured-books');
+            if (!featuredBooksContainer) return;
+
+            // Get first 3 available books
+            const featuredBooks = books.filter(book => book.status === 'available').slice(0, 3);
+            
+            featuredBooksContainer.innerHTML = featuredBooks.map(book => `
+                <div class="card">
+                    <img src="${book.image}" alt="${book.title}" class="card-img">
+                    <div class="card-body">
+                        <h3 class="card-title">${book.title}</h3>
+                        <p class="card-text">${book.author}</p>
+                        <p class="card-text">${book.description}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>$${book.price}</span>
+                        <span class="badge badge-success">Available</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render all books on books page
+        function renderAllBooks() {
+            const allBooksContainer = document.getElementById('all-books');
+            if (!allBooksContainer) return;
+
+            allBooksContainer.innerHTML = books.map(book => `
+                <div class="card">
+                    <img src="${book.image}" alt="${book.title}" class="card-img">
+                    <div class="card-body">
+                        <h3 class="card-title">${book.title}</h3>
+                        <p class="card-text">${book.author}</p>
+                        <p class="card-text">${book.description}</p>
+                    </div>
+                    <div class="card-footer">
+                        <span>$${book.price}</span>
+                        <span class="badge ${book.status === 'available' ? 'badge-success' : 'badge-warning'}">
+                            ${book.status === 'available' ? 'Available' : 'Out of Stock'}
+                        </span>
+                        ${book.status === 'available' ? 
+                            '<button class="btn btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">Add to Cart</button>' : 
+                            '<button class="btn btn-primary" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;" disabled>Add to Cart</button>'
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter books based on search input
+        function filterBooks() {
+            const searchTerm = document.getElementById('book-search').value.toLowerCase();
+            const bookCards = document.querySelectorAll('#all-books .card');
+            
+            bookCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const author = card.querySelector('.card-text').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || author.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Render users table on admin page
+        function renderUsersTable() {
+            const usersList = document.getElementById('users-list');
+            if (!usersList) return;
+
+            usersList.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <select class="select-control" data-user-id="${user.id}">
+                            <option value="6months" ${user.membership === '6months' ? 'selected' : ''}>6 Months</option>
+                            <option value="1year" ${user.membership === '1year' ? 'selected' : ''}>1 Year</option>
+                            <option value="2years" ${user.membership === '2years' ? 'selected' : ''}>2 Years</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" data-user-id="${user.id}" style="padding: 0.3rem 0.6rem; font-size: 0.9rem;">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Render profile page
+        function renderProfile() {
+            if (!currentUser) {
+                window.location.hash = 'login';
+                return;
+            }
+
+            document.getElementById('profile-username').textContent = currentUser.username;
+            document.getElementById('profile-email').textContent = currentUser.email;
+            document.getElementById('profile-membership').textContent = 
+                currentUser.membership === '6months' ? '6 Months' :
+                currentUser.membership === '1year' ? '1 Year' : '2 Years';
+            
+            // Set the current membership radio button
+            document.getElementById(`update-${currentUser.membership}`).checked = true;
+        }
+
+        // Handle login
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            // In a real app, this would be an API call
+            const user = users.find(u => u.username === username);
+            
+            if (user) {
+                // Simulate successful login
+                currentUser = user;
+                localStorage.setItem('libraryUser', JSON.stringify(currentUser));
+                updateUI();
+                
+                // Redirect based on role
+                window.location.hash = user.role === 'admin' ? 'admin' : 'profile';
+            } else {
+                // Show error
+                document.getElementById('login-error').textContent = 'Invalid username or password';
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+
+        // Handle registration
+        function handleRegister(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const membership = document.querySelector('input[name="membership"]:checked').value;
+            
+            // In a real app, this would be an API call
+            const newUser = {
+                id: users.length + 1,
+                username,
+                email,
+                password, // In a real app, this would be hashed
+                role: 'user',
+                membership
+            };
+            
+            users.push(newUser);
+            
+            // Auto-login the new user
+            currentUser = newUser;
+            localStorage.setItem('libraryUser', JSON.stringify(currentUser));
+            updateUI();
+            
+            // Redirect to profile
+            window.location.hash = 'profile';
+        }
+
+        // Handle membership update
+        function handleMembershipUpdate(e) {
+            e.preventDefault();
+            
+            const newMembership = document.querySelector('input[name="update-membership"]:checked').value;
+            
+            // In a real app, this would be an API call
+            currentUser.membership = newMembership;
+            localStorage.setItem('libraryUser', JSON.stringify(currentUser));
+            
+            // Update the displayed membership
+            document.getElementById('profile-membership').textContent = 
+                newMembership === '6months' ? '6 Months' :
+                newMembership === '1year' ? '1 Year' : '2 Years';
+            
+            alert('Membership updated successfully!');
+        }
+
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('libraryUser');
+            updateUI();
+            window.location.hash = 'home';
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
