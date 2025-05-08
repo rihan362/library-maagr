@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Collection - Library System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">Library System</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="books.html" class="active">Books</a>
+            <a href="about.html">About</a>
+            <div class="user-menu">
+                <button class="user-btn">
+                    <span id="username-display">Guest</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3.5 9.5a3.5 3.5 0 1 1 5.898 2.549 5.507 5.507 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4.001 4.001 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.5 9.5zM11 4a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                    </svg>
+                </button>
+                <div class="user-dropdown">
+                    <a href="login.html">Login</a>
+                    <a href="register.html">Register</a>
+                    <a href="#" id="logout-btn" style="display: none;">Logout</a>
+                    <a href="profile.html" id="profile-link" style="display: none;">Profile</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Our Book Collection</h1>
+        
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search books...">
+            <button id="search-btn">Search</button>
+        </div>
+        
+        <div class="filter-options">
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <option value="fiction">Fiction</option>
+                <option value="non-fiction">Non-Fiction</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+            </select>
+            
+            <select id="availability-filter">
+                <option value="all">All</option>
+                <option value="available">Available</option>
+                <option value="checked-out">Checked Out</option>
+            </select>
+        </div>
+        
+        <div class="book-grid" id="book-grid">
+            <!-- Books will be loaded here by JavaScript -->
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="books.js"></script>
+</body>
+</html>
